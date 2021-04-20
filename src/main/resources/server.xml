@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Server>
-    <Service>
-        <Connector port="8080"/>
-        <Engine>
-            <Host name="localhost" appBase="/webapps"></Host>
-        </Engine>
-    </Service>
+	<Service>
+		<Connector port="8080"></Connector>
+		<Engine>
+			<Host name="localhost" appBase="F:\workspace\Minicat\src\main\java\webapps"></Host>
+		</Engine>
+	</Service>
 </Server>

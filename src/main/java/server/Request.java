@@ -10,11 +10,29 @@ public class Request {
 
     private String method; // 请求方式，比如GET/POST
     private String url;  // 例如 /,/index.html
+    private String context;
+    private String host;
 
     private InputStream inputStream;  // 输入流，其他属性从输入流中解析出来
 
 
-    public String getMethod() {
+    public String getContext() {
+		return context;
+	}
+
+	public void setContext(String context) {
+		this.context = context;
+	}
+
+	public String getHost() {
+		return host;
+	}
+
+	public void setHost(String host) {
+		this.host = host;
+	}
+
+	public String getMethod() {
         return method;
     }
 
@@ -62,11 +80,15 @@ public class Request {
         String[] strings = firstLineStr.split(" ");
 
         this.method = strings[0];
-        this.url = strings[1];
+        this.context = strings[1].substring(1, strings[1].indexOf("/", 2));
+        this.url = strings[1].substring(strings[1].indexOf("/", 2));
+        String temp = inputStr.split("\\n")[1].split(" ")[1];
+        this.host = temp.substring(0, temp.indexOf(":"));
 
         System.out.println("=====>>method:" + method);
+        System.out.println("=====>>context:" + context);
         System.out.println("=====>>url:" + url);
-
+        System.out.println("=====>>host:" + host);
 
     }
 }

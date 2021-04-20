@@ -1,12 +1,5 @@
 package server;
 
-import mapper.Mapper;
-import mapper.Host;
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.ServerSocket;
@@ -14,7 +7,21 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.*;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
+
+import mapper.Host;
+import mapper.Mapper;
 
 /**
  * Minicat的主类
@@ -44,7 +51,7 @@ public class Bootstrap {
         init();
 
         // 加载解析相关的配置，web.xml
-        loadServlet();
+      //  loadServlet();
 
 
         // 定义一个线程池
@@ -142,8 +149,8 @@ public class Bootstrap {
             requestProcessor.start();
         }*/
 
-
-
+    
+        
         System.out.println("=========>>>>>>使用线程池进行多线程改造");
         /*
             多线程改造（使用线程池）
@@ -151,7 +158,7 @@ public class Bootstrap {
         while(true) {
 
             Socket socket = serverSocket.accept();
-            RequestProcessor requestProcessor = new RequestProcessor(socket,servletMap);
+            RequestProcessor requestProcessor = new RequestProcessor(socket,mapper);
             //requestProcessor.start();
             threadPoolExecutor.execute(requestProcessor);
         }
@@ -174,8 +181,7 @@ public class Bootstrap {
                 Element element =  selectNodes.get(i);
                 // <Connector port="8080"/>
                 Element connectorElement = (Element) element.selectSingleNode("Connector");
-                int port = Integer.parseInt(connectorElement.attributeValue("port"));
-                host.setPort(port);//赋值端口
+                port = Integer.parseInt(connectorElement.attributeValue("port"));
                 // <Engine>
                 //   <Host name="localhost" appBase="/webapps"></Host>
                 // </Engine>
@@ -184,7 +190,8 @@ public class Bootstrap {
                 host.setHostName(hostName);//赋值hostName
                 String appBase = hostElement.attributeValue("appBase");
                 host.setAppBase(appBase);
-
+                host.init();
+                mapper.getHosts().add(host);
 
 
             }
@@ -248,6 +255,7 @@ public class Bootstrap {
      * Minicat 的程序启动入口
      * @param args
      */
+    // localhost:8080/demo1/index.html
     public static void main(String[] args) {
         Bootstrap bootstrap = new Bootstrap();
         try {

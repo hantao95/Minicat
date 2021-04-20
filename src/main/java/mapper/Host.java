@@ -1,12 +1,9 @@
 package mapper;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class Host extends HashMap<String,Context>  {
-    private int port = 8080;
     private String hostName = "localhost";
     private String appBase = "";
 
@@ -21,14 +18,6 @@ public class Host extends HashMap<String,Context>  {
             context.init(file);
             this.put(key,context);
         }
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
     }
 
     public String getHostName() {

@@ -1,27 +1,35 @@
 package mapper;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
+
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
-import server.HttpServlet;
 
-import java.io.File;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import server.HttpServlet;
 
 public class Wrapper extends HashMap<String, HttpServlet> {
 
     public void init(File file){
         File[] fs = file.listFiles();
-        file.getAbsoluteFile();
-        for(){
-
+        InputStream resourceAsStream = null;
+        for(File f:fs){
+        	if("web.xml".equals(f.getName())) {
+        		try {
+					resourceAsStream = new FileInputStream(f);
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+        	}
         }
 
-        InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("web.xml");
         SAXReader saxReader = new SAXReader();
 
         try {
