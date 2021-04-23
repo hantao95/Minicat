@@ -13,15 +13,18 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
 import server.HttpServlet;
+import server.MyClassLoader;
 
 public class Wrapper extends HashMap<String, HttpServlet> {
 
     public void init(File file){
         File[] fs = file.listFiles();
         InputStream resourceAsStream = null;
+        String appBase = "";
         for(File f:fs){
         	if("web.xml".equals(f.getName())) {
         		try {
+        			appBase = f.getAbsolutePath().substring(0, f.getAbsolutePath().length()-7);
 					resourceAsStream = new FileInputStream(f);
 				} catch (FileNotFoundException e) {
 					// TODO Auto-generated catch block
@@ -46,13 +49,16 @@ public class Wrapper extends HashMap<String, HttpServlet> {
                 Element servletclassElement = (Element) element.selectSingleNode("servlet-class");
                 String servletClass = servletclassElement.getStringValue();
 
-
                 // 根据servlet-name的值找到url-pattern
                 Element servletMapping = (Element) rootElement.selectSingleNode("/web-app/servlet-mapping[servlet-name='" + servletName + "']");
                 // /lagou
                 String urlPattern = servletMapping.selectSingleNode("url-pattern").getStringValue();
-                this.put(urlPattern, (HttpServlet) Class.forName(servletClass).newInstance());
-
+                
+                MyClassLoader myClassLoader = new MyClassLoader(appBase+servletClass.replaceAll("\\.", "/")+".class");
+                Class<?> servlet =myClassLoader.findClass(servletClass);
+                
+               // this.put(urlPattern, (HttpServlet) Class.forName(servletClass).newInstance());
+                this.put(urlPattern, (HttpServlet) servlet.newInstance());
             }
 
 

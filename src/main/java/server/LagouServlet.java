@@ -8,11 +8,11 @@ public class LagouServlet extends HttpServlet {
 
 
         try {
-            Thread.sleep(100000);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        String content = "<h1>LagouServlet get</h1>";
+        String content = "<h1>LagouServlet get old</h1>";
         try {
             response.output((HttpProtocolUtil.getHttpHeader200(content.getBytes().length) + content));
         } catch (IOException e) {
